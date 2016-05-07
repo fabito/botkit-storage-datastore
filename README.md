@@ -1,2 +1,4 @@
-# botkit-storage-base
-A sample repo for use in creating new storage modules for Botkit
+# botkit-storage-datastore
+
+A Google Cloud Datastore storage module for Botkit
+
