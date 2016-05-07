@@ -1,4 +1,4 @@
-var gloud = require('gcloud');
+var gcloud = require('gcloud');
 
 /**
  * The Botkit google cloud datastore driver
@@ -47,7 +47,7 @@ function get(datastore, kind) {
     return function(id, cb) {
         var key = datastore.key([kind, id]);
         datastore.get(key, function(err, entity) {
-            cb(err, entity);
+            cb(err, entity.data);
         });
     };
 }
@@ -81,16 +81,24 @@ function save(datastore, kind) {
 function all(datastore, kind) {
     return function(cb) {
         var query = datastore.createQuery(kind);
-        datastore.runQuery(query)
-          .on('error', cb)
-          .on('end', function(entities) {
+
+        datastore.runQuery(query, function(err, entities) {
+
+            if(err) {
+                return cb(err, null);
+            }
+
             if (!entities) {
                 return cb(null, []);
             }
-            var list = Object.keys(results).map(function(key) {
-                return results[key];
+
+            var list = entities.map(function(entity) {
+                return entity.data;
             });
+
             cb(null, list);
-          });
+
+        });
+
     };
 }
