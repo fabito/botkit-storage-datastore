@@ -13,9 +13,9 @@ module.exports = function(config) {
     }
 
     var datastore = gcloud.datastore(config),
-        teamKind = 'Team',
-        channelKind = 'Channel',
-        userKind = 'User';
+        teamKind = config.teamKind || 'BotkitTeam',
+        channelKind = config.channelKind || 'BotkitChannel',
+        userKind = config.userKind || 'BotkitUser';
 
     return {
         teams: {
@@ -47,7 +47,7 @@ function get(datastore, kind) {
     return function(id, cb) {
         var key = datastore.key([kind, id]);
         datastore.get(key, function(err, entity) {
-            cb(err, entity.data);
+            cb(err, entity ? entity.data : null);
         });
     };
 }
@@ -81,10 +81,11 @@ function save(datastore, kind) {
 function all(datastore, kind) {
     return function(cb) {
         var query = datastore.createQuery(kind);
-
+        console.log(query);
         datastore.runQuery(query, function(err, entities) {
-
+            console.log(err || entities);
             if(err) {
+
                 return cb(err, null);
             }
 
