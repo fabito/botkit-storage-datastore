@@ -47,13 +47,17 @@ function get(datastore, kind) {
     return function(id, cb) {
         var key = datastore.key([kind, id]);
         datastore.get(key, function(err, entity) {
-            cb(err, entity ? entity.data : null);
+            if (err) {
+                return cb(err, null);
+            }
+            return cb(null, entity ? entity.data : null);
         });
     };
 }
 
 /**
- * Given a datastore reference and a kind, will return a function that will save an entity. The object must have an id property
+ * Given a datastore reference and a kind, will return a function that will save an entity.
+ * The object must have an id property
  *
  * @param {Object} datastore A reference to the datastore Object
  * @param {String} kind The entity kind
@@ -63,11 +67,17 @@ function save(datastore, kind) {
     return function(data, cb) {
         var key = datastore.key([kind, data.id]);
         datastore.save({
-          key: key,
-          data: data
-        }, function(err, resp){
-            cb(err, resp)
-        });
+            key: key,
+            //TODO convert object to array so that we can exclude properties from indexes
+            // data: [
+            //   {
+            //     name: 'rating',
+            //     value: 10,
+            //     excludeFromIndexes: true
+            //   }
+            // ]
+            data: data
+        }, cb);
     };
 }
 
@@ -81,11 +91,8 @@ function save(datastore, kind) {
 function all(datastore, kind) {
     return function(cb) {
         var query = datastore.createQuery(kind);
-        console.log(query);
         datastore.runQuery(query, function(err, entities) {
-            console.log(err || entities);
-            if(err) {
-
+            if (err) {
                 return cb(err, null);
             }
 
