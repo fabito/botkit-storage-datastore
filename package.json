@@ -1,5 +1,5 @@
 {
-  "name": "botkit-storage-google-cloud-datastore",
+  "name": "botkit-storage-datastore",
   "version": "1.0.0",
   "description": "Google Cloud Datastore driver for Botkit",
   "main": "index.js",
