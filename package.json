@@ -20,6 +20,7 @@
     "gcloud": "^0.32.0"
   },
   "devDependencies": {
+    "coveralls": "^2.11.9",
     "istanbul": "^0.4.1",
     "jscs": "^2.8.0",
     "mocha": "^2.3.4",
@@ -27,5 +28,5 @@
     "should": "^8.0.2",
     "should-sinon": "0.0.3",
     "sinon": "^1.17.2"
-  }  
+  }
 }
