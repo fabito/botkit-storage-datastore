@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/fabito/botkit-storage-datastore.svg?branch=master)](https://travis-ci.org/fabito/botkit-storage-datastore)
+
 # botkit-storage-datastore
 
 A Google Cloud Datastore storage module for Botkit
