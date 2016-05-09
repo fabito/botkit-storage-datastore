@@ -10,12 +10,17 @@
   "keywords": [
     "botkit",
     "datastore",
-    "google",
-    "cloud",
-    "google-cloud-datastore"
+    "google cloud datastore"
   ],
   "author": "Fábio Franco Uechi",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fabito/botkit-storage-datastore.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fabito/botkit-storage-datastore/issues"
+  },  
   "dependencies": {
     "gcloud": "^0.32.0"
   },
