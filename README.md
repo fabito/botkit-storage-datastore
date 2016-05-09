@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/fabito/botkit-storage-datastore.svg?branch=master)](https://travis-ci.org/fabito/botkit-storage-datastore)
-
 [![Coverage Status](https://coveralls.io/repos/github/fabito/botkit-storage-datastore/badge.svg?branch=master)](https://coveralls.io/github/fabito/botkit-storage-datastore?branch=master)
 
 # botkit-storage-datastore
