@@ -7,7 +7,6 @@ var gcloud = require('gcloud');
  * @returns {{teams: {get, save, all}, channels: {get, save, all}, users: {get, save, all}}}
  */
 module.exports = function(config) {
-
     if (!config || !config.projectId) {
         throw new Error('projectId is required.');
     }
@@ -46,14 +45,15 @@ module.exports = function(config) {
 function get(datastore, kind) {
     return function(id, cb) {
         var key = datastore.key([kind, id]);
+
         datastore.get(key, function(err, entity) {
-            if (err) {
-                return cb(err, null);
-            }
+            if (err)
+                return cb(err);
+
             return cb(null, entity ? entity.data : null);
         });
     };
-}
+};
 
 /**
  * Given a datastore reference and a kind, will return a function that will save an entity.
@@ -68,7 +68,7 @@ function save(datastore, kind) {
         var key = datastore.key([kind, data.id]);
         datastore.save({
             key: key,
-            //TODO convert object to array so that we can exclude properties from indexes
+            // @TODO: convert object to array so that we can exclude properties from indexes
             // data: [
             //   {
             //     name: 'rating',
@@ -79,7 +79,7 @@ function save(datastore, kind) {
             data: data
         }, cb);
     };
-}
+};
 
 /**
  * Given a datastore reference and a kind, will return a function that will return all stored entities.
@@ -91,22 +91,17 @@ function save(datastore, kind) {
 function all(datastore, kind) {
     return function(cb) {
         var query = datastore.createQuery(kind);
+
         datastore.runQuery(query, function(err, entities) {
-            if (err) {
-                return cb(err, null);
-            }
+            if (err)
+                return cb(err);
 
-            if (!entities) {
-                return cb(null, []);
-            }
-
-            var list = entities.map(function(entity) {
+            var list = (entities || []).map(function(entity) {
                 return entity.data;
             });
 
             cb(null, list);
-
         });
 
     };
-}
+};
