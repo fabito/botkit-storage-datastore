@@ -105,7 +105,12 @@ function save(datastore, kind, namespace) {
  */
 function all(datastore, kind, namespace) {
     return function(cb) {
-        var query = datastore.createQuery(kind);
+        var query = null;
+        if (namespace) {
+            query = datastore.createQuery(namespace, kind);
+        } else {
+            query = datastore.createQuery(kind);
+        }
 
         datastore.runQuery(query, function(err, entities) {
             if (err)

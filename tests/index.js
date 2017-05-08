@@ -81,7 +81,6 @@ describe('Datastore', function() {
                 config = {
                     projectId: 'right_here'
                 };
-
                 entity = {
                     key: sinon.stub(),
                     data: sinon.stub()
@@ -96,7 +95,7 @@ describe('Datastore', function() {
                 datastoreMock.get.callsArgWith(1, null, entity);
                 Storage(config)[method].get('walterwhite', cb);
                 datastoreMock.key.should.be.calledWith([METHODS[method], 'walterwhite']);
-                cb.should.be.calledWith(null, entity.data);
+                cb.should.be.calledWith(null, entity);
             });
 
             it('should handle non existent entity', function() {
@@ -117,6 +116,60 @@ describe('Datastore', function() {
             });
         });
 
+        describe('get from namespace', function() {
+            var records,
+                entity,
+                config;
+
+            beforeEach(function() {
+                config = {
+                    projectId: 'right_here',
+                    namespace: 'my-space'
+                };
+                entity = {
+                    key: sinon.stub(),
+                    data: sinon.stub()
+                };
+                entities = [
+                    sinon.stub().returns(entity)
+                ];
+            });
+
+            it('should get entity', function() {
+                var cb = sinon.stub();
+                datastoreMock.get.callsArgWith(1, null, entity);
+                Storage(config)[method].get('walterwhite', cb);
+                datastoreMock.key.should.be.calledWith({
+                    namespace: config.namespace,
+                    path: [METHODS[method], 'walterwhite']
+                });
+                cb.should.be.calledWith(null, entity);
+            });
+
+            it('should handle non existent entity', function() {
+                var cb = sinon.stub();
+                datastoreMock.get.callsArgWith(1, null, null);
+                Storage(config)[method].get('walterwhite', cb);
+                datastoreMock.key.should.be.calledWith({
+                    namespace: config.namespace,
+                    path: [METHODS[method], 'walterwhite']
+                });
+                cb.should.be.calledWith(null, null);
+            });
+
+            it('should call callback on error', function() {
+                var cb = sinon.stub(),
+                    err = new Error('OOPS');
+                datastoreMock.get.callsArgWith(1, err);
+                Storage(config)[method].get('walterwhite', cb);
+                datastoreMock.key.should.be.calledWith({
+                    namespace: config.namespace,
+                    path: [METHODS[method], 'walterwhite']
+                });
+                cb.should.be.calledWith(err);
+            });
+        });
+
         describe('save', function() {
             var config;
 
@@ -133,6 +186,30 @@ describe('Datastore', function() {
 
                 Storage(config)[method].save(data, cb);
                 datastoreMock.key.should.be.calledWith([METHODS[method], data.id]);
+                datastoreMock.save.should.be.calledWith(updateObj, cb);
+            });
+        });
+
+        describe('save into namespace', function() {
+            var config;
+
+            beforeEach(function() {
+                config = {
+                    projectId: 'right_here',
+                    namespace: 'my-space'
+                };
+            });
+
+            it('should call datastore save', function() {
+                var cb = sinon.stub(),
+                    data = {id: 'walterwhite'},
+                    updateObj = { key: keyMock, data: data};
+
+                Storage(config)[method].save(data, cb);
+                datastoreMock.key.should.be.calledWith({
+                    namespace: config.namespace,
+                    path: [METHODS[method], data.id]
+                });
                 datastoreMock.save.should.be.calledWith(updateObj, cb);
             });
         });
@@ -169,7 +246,7 @@ describe('Datastore', function() {
 
             it('should get records', function() {
                 var cb = sinon.stub(),
-                    result = [entities[0].data, entities[1].data];
+                    result = [entities[0], entities[1]];
 
                 datastoreMock.runQuery.callsArgWith(1, null, entities);
                 Storage(config)[method].all(cb);
@@ -191,6 +268,65 @@ describe('Datastore', function() {
                 datastoreMock.runQuery.callsArgWith(1, err);
                 Storage(config)[method].all(cb);
                 datastoreMock.createQuery.should.be.calledWith(METHODS[method]);
+                cb.should.be.calledWith(err);
+            });
+        });
+
+        describe('all from namespace', function() {
+
+            var records,
+                entities,
+                config;
+
+            beforeEach(function() {
+                config = {
+                    projectId: 'right_here',
+                    namespace: 'my-space'
+                };
+
+                entities = [
+                    {
+                        key: 'walterwhite',
+                        data: {
+                            id: 'walterwhite',
+                            name: 'heisenberg'
+                        }
+                    },
+                    {
+                        key: 'jessepinkman',
+                        data: {
+                            id: 'jessepinkman',
+                            name: 'capncook'
+                        }
+                    }
+                ];
+
+            });
+
+            it('should get records', function() {
+                var cb = sinon.stub(),
+                    result = [entities[0], entities[1]];
+
+                datastoreMock.runQuery.callsArgWith(1, null, entities);
+                Storage(config)[method].all(cb);
+                datastoreMock.createQuery.should.be.calledWith(config.namespace, METHODS[method]);
+                cb.should.be.calledWith(null, result);
+            });
+
+            it('should handle no records', function() {
+                var cb = sinon.stub();
+                datastoreMock.runQuery.callsArgWith(1, null, undefined);
+                Storage(config)[method].all(cb);
+                datastoreMock.createQuery.should.be.calledWith(config.namespace, METHODS[method]);
+                cb.should.be.calledWith(null, []);
+            });
+
+            it('should call callback on error', function() {
+                var cb = sinon.stub(),
+                    err = new Error('OOPS');
+                datastoreMock.runQuery.callsArgWith(1, err);
+                Storage(config)[method].all(cb);
+                datastoreMock.createQuery.should.be.calledWith(config.namespace, METHODS[method]);
                 cb.should.be.calledWith(err);
             });
         });
