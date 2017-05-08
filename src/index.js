@@ -46,14 +46,12 @@ module.exports = function(config) {
 function get(datastore, kind, namespace) {
     return function(id, cb) {
         var keyParam = [kind, id];
-
         if (namespace) {
             keyParam = {
                 namespace: namespace,
                 path: keyParam
             };
         }
-
         var key = datastore.key(keyParam);
 
         datastore.get(key, function(err, entity) {
@@ -76,14 +74,12 @@ function get(datastore, kind, namespace) {
 function save(datastore, kind, namespace) {
     return function(data, cb) {
         var keyParam = [kind, data.id];
-        
         if (namespace) {
             keyParam = {
                 namespace: namespace,
                 path: keyParam
             };
         }
-
         var key = datastore.key(keyParam);
         datastore.save({
             key: key,
