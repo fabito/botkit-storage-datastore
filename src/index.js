@@ -1,4 +1,4 @@
-var gcloud = require('gcloud');
+var gcloud = require('google-cloud');
 
 /**
  * The Botkit google cloud datastore driver
