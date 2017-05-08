@@ -26,7 +26,7 @@ describe('Datastore', function() {
         };
 
         Storage = proxyquire('../src/index', {
-            gcloud: gcloudMock
+            'google-cloud': gcloudMock
         });
 
     });
