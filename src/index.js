@@ -1,4 +1,4 @@
-var gcloud = require('gcloud');
+var gcloud = require('google-cloud');
 
 /**
  * The Botkit google cloud datastore driver
@@ -12,25 +12,26 @@ module.exports = function(config) {
     }
 
     var datastore = gcloud.datastore(config),
+        namespace = config.namespace,
         teamKind = config.teamKind || 'BotkitTeam',
         channelKind = config.channelKind || 'BotkitChannel',
         userKind = config.userKind || 'BotkitUser';
 
     return {
         teams: {
-            get: get(datastore, teamKind),
-            save: save(datastore, teamKind),
-            all: all(datastore, teamKind)
+            get: get(datastore, teamKind, namespace),
+            save: save(datastore, teamKind, namespace),
+            all: all(datastore, teamKind, namespace)
         },
         channels: {
-            get: get(datastore, channelKind),
-            save: save(datastore, channelKind),
-            all: all(datastore, channelKind)
+            get: get(datastore, channelKind, namespace),
+            save: save(datastore, channelKind, namespace),
+            all: all(datastore, channelKind, namespace)
         },
         users: {
-            get: get(datastore, userKind),
-            save: save(datastore, userKind),
-            all: all(datastore, userKind)
+            get: get(datastore, userKind, namespace),
+            save: save(datastore, userKind, namespace),
+            all: all(datastore, userKind, namespace)
         }
     };
 };
@@ -42,15 +43,22 @@ module.exports = function(config) {
  * @param {String} kind The entity kind
  * @returns {Function} The get function
  */
-function get(datastore, kind) {
+function get(datastore, kind, namespace) {
     return function(id, cb) {
-        var key = datastore.key([kind, id]);
+        var keyParam = [kind, id];
+        if (namespace) {
+            keyParam = {
+                namespace: namespace,
+                path: keyParam
+            };
+        }
+        var key = datastore.key(keyParam);
 
         datastore.get(key, function(err, entity) {
             if (err)
                 return cb(err);
 
-            return cb(null, entity ? entity.data : null);
+            return cb(null, entity ? entity : null);
         });
     };
 };
@@ -63,9 +71,16 @@ function get(datastore, kind) {
  * @param {String} kind The entity kind
  * @returns {Function} The save function
  */
-function save(datastore, kind) {
+function save(datastore, kind, namespace) {
     return function(data, cb) {
-        var key = datastore.key([kind, data.id]);
+        var keyParam = [kind, data.id];
+        if (namespace) {
+            keyParam = {
+                namespace: namespace,
+                path: keyParam
+            };
+        }
+        var key = datastore.key(keyParam);
         datastore.save({
             key: key,
             // @TODO: convert object to array so that we can exclude properties from indexes
@@ -88,16 +103,21 @@ function save(datastore, kind) {
  * @param {String} kind The entity kind
  * @returns {Function} The all function
  */
-function all(datastore, kind) {
+function all(datastore, kind, namespace) {
     return function(cb) {
-        var query = datastore.createQuery(kind);
+        var query = null;
+        if (namespace) {
+            query = datastore.createQuery(namespace, kind);
+        } else {
+            query = datastore.createQuery(kind);
+        }
 
         datastore.runQuery(query, function(err, entities) {
             if (err)
                 return cb(err);
 
             var list = (entities || []).map(function(entity) {
-                return entity.data;
+                return entity;
             });
 
             cb(null, list);
