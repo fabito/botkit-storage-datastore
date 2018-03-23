@@ -3,7 +3,7 @@
 var DatastoreStorage = require('../src');
 
 var storage = new DatastoreStorage({
-	projectId: 'myproject',
+	projectId: process.env.projectId || 'myproject',
 	namespace: '---botkit---'
 	//,apiEndpoint: 'http://localhost:8888'
 });
