@@ -1,4 +1,4 @@
-var gcloud = require('google-cloud');
+var Datastore = require('@google-cloud/datastore');
 
 /**
  * The Botkit google cloud datastore driver
@@ -11,7 +11,7 @@ module.exports = function(config) {
         throw new Error('projectId is required.');
     }
 
-    var datastore = gcloud.datastore(config),
+    var datastore = Datastore(config),
         namespace = config.namespace,
         teamKind = config.teamKind || 'BotkitTeam',
         channelKind = config.channelKind || 'BotkitChannel',

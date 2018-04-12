@@ -5,7 +5,7 @@ var should = require('should'),
 require('should-sinon');
 
 describe('Datastore', function() {
-    var gcloudMock,
+    var GCloudDatastore,
         datastoreMock,
         Storage;
 
@@ -21,12 +21,10 @@ describe('Datastore', function() {
             runQuery: sinon.stub()
         };
 
-        gcloudMock = {
-            datastore: sinon.stub().returns(datastoreMock)
-        };
+        GCloudDatastore = sinon.stub().returns(datastoreMock);
 
         Storage = proxyquire('../src/index', {
-            'google-cloud': gcloudMock
+            '@google-cloud/datastore': GCloudDatastore
         });
 
     });
@@ -44,7 +42,7 @@ describe('Datastore', function() {
         it('should initialize datastore with projectId', function() {
             var config = {projectId: 'crystalbluepersuation'};
             Storage(config);
-            gcloudMock.datastore.should.be.calledWith(config);
+            GCloudDatastore.should.be.calledWith(config);
         });
     });
 
