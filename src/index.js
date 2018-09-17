@@ -21,17 +21,20 @@ module.exports = function(config) {
         teams: {
             get: get(datastore, teamKind, namespace),
             save: save(datastore, teamKind, namespace),
-            all: all(datastore, teamKind, namespace)
+            all: all(datastore, teamKind, namespace),
+            delete: del(datastore, teamKind, namespace)
         },
         channels: {
             get: get(datastore, channelKind, namespace),
             save: save(datastore, channelKind, namespace),
-            all: all(datastore, channelKind, namespace)
+            all: all(datastore, channelKind, namespace),
+            delete: del(datastore, channelKind, namespace)
         },
         users: {
             get: get(datastore, userKind, namespace),
             save: save(datastore, userKind, namespace),
-            all: all(datastore, userKind, namespace)
+            all: all(datastore, userKind, namespace),
+            delete: del(datastore, userKind, namespace)
         }
     };
 };
@@ -64,6 +67,27 @@ function get(datastore, kind, namespace) {
 };
 
 /**
+ * Given a datastore reference and a kind, will return a function that will delete a single entity by key
+ *
+ * @param {Object} datastore A reference to the datastore Object
+ * @param {String} kind The entity kind
+ * @returns {Function} The get function
+ */
+function del(datastore, kind, namespace) {
+    return function(id, cb) {
+        var keyParam = [kind, id];
+        if (namespace) {
+            keyParam = {
+                namespace: namespace,
+                path: keyParam
+            };
+        }
+        var key = datastore.key(keyParam);
+        datastore.delete(key, cb);
+    };
+};
+
+/**
  * Given a datastore reference and a kind, will return a function that will save an entity.
  * The object must have an id property
  *
@@ -81,18 +105,7 @@ function save(datastore, kind, namespace) {
             };
         }
         var key = datastore.key(keyParam);
-        datastore.save({
-            key: key,
-            // @TODO: convert object to array so that we can exclude properties from indexes
-            // data: [
-            //   {
-            //     name: 'rating',
-            //     value: 10,
-            //     excludeFromIndexes: true
-            //   }
-            // ]
-            data: data
-        }, cb);
+        datastore.save({key: key, data: data}, cb);
     };
 };
 
