@@ -4,7 +4,7 @@
   "description": "Google Cloud Datastore driver for Botkit",
   "main": "index.js",
   "scripts": {
-    "pretest": "jscs ./",
+    "pretest": "eslint ./",
     "test": "istanbul cover --report lcov --dir coverage/ _mocha ./tests --grep ./tests/*.js -- --colors"
   },
   "keywords": [
@@ -25,10 +25,10 @@
     "@google-cloud/datastore": "^3.0.1"
   },
   "devDependencies": {
-    "coveralls": "^2.11.9",
+    "coveralls": "^3.0.2",
+    "eslint": "^5.12.1",
     "istanbul": "^0.4.1",
-    "jscs": "^2.8.0",
-    "mocha": "^2.3.4",
+    "mocha": "^5.2.0",
     "proxyquire": "^1.7.3",
     "should": "^8.0.2",
     "should-sinon": "0.0.3",
