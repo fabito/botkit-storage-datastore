@@ -26,7 +26,7 @@ describe('Datastore', function() {
         GCloudDatastore = sinon.stub().returns(datastoreMock);
 
         Storage = proxyquire('../src/index', {
-            '@google-cloud/datastore': GCloudDatastore
+            '@google-cloud/datastore': { Datastore: GCloudDatastore}
         });
 
     });
