@@ -1,15 +1,8 @@
-//var wtf = require('wtfnode')
 var should = require('should'),
     sinon = require('sinon'),
     proxyquire = require('proxyquire').noCallThru();
 
 require('should-sinon');
-/*
-
-setInterval(() => {
-    wtf.dump()
-}, 2000)
-*/
 
 describe('Datastore', function() {
     var GCloudDatastore,
