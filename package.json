@@ -1,11 +1,11 @@
 {
   "name": "botkit-storage-datastore",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Google Cloud Datastore driver for Botkit",
   "main": "src/index.js",
   "scripts": {
     "pretest": "eslint ./",
-    "test": "istanbul cover --report lcov --dir coverage/ _mocha ./tests/index.js  -- --colors"
+    "test": "nyc --reporter lcov  ./node_modules/.bin/mocha ./tests/index.js"
   },
   "keywords": [
     "botkit",
@@ -27,8 +27,8 @@
   "devDependencies": {
     "coveralls": "^3.0.2",
     "eslint": "^5.12.1",
-    "istanbul": "^0.4.5",
     "mocha": "^5.2.0",
+    "nyc": "^13.3.0",
     "proxyquire": "^2.1.0",
     "should": "^13.2.3",
     "should-sinon": "0.0.6",

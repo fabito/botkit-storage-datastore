@@ -3,3 +3,4 @@
 .eslint*
 .travis**
 coverage
+.nyc_output
