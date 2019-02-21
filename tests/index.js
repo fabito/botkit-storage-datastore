@@ -5,8 +5,9 @@ var should = require('should'),
 require('should-sinon');
 
 describe('Datastore', function() {
-    var gcloudMock,
+    var GCloudDatastore,
         datastoreMock,
+        keyMock,
         Storage;
 
     beforeEach(function() {
@@ -17,16 +18,15 @@ describe('Datastore', function() {
             key: sinon.stub().returns(keyMock),
             get: sinon.stub(),
             save: sinon.stub(),
+            delete: sinon.stub(),
             createQuery: sinon.stub(),
             runQuery: sinon.stub()
         };
 
-        gcloudMock = {
-            datastore: sinon.stub().returns(datastoreMock)
-        };
+        GCloudDatastore = sinon.stub().returns(datastoreMock);
 
         Storage = proxyquire('../src/index', {
-            'google-cloud': gcloudMock
+            '@google-cloud/datastore': { Datastore: GCloudDatastore}
         });
 
     });
@@ -44,7 +44,7 @@ describe('Datastore', function() {
         it('should initialize datastore with projectId', function() {
             var config = {projectId: 'crystalbluepersuation'};
             Storage(config);
-            gcloudMock.datastore.should.be.calledWith(config);
+            GCloudDatastore.should.be.calledWith(config);
         });
     });
 
@@ -184,9 +184,11 @@ describe('Datastore', function() {
                     data = {id: 'walterwhite'},
                     updateObj = { key: keyMock, data: data};
 
+                datastoreMock.save.callsArgWith(1, null, sinon.stub());
                 Storage(config)[method].save(data, cb);
                 datastoreMock.key.should.be.calledWith([METHODS[method], data.id]);
                 datastoreMock.save.should.be.calledWith(updateObj, cb);
+                cb.should.be.calledWith(null);
             });
         });
 
@@ -205,12 +207,14 @@ describe('Datastore', function() {
                     data = {id: 'walterwhite'},
                     updateObj = { key: keyMock, data: data};
 
+                datastoreMock.save.callsArgWith(1, null, sinon.stub());
                 Storage(config)[method].save(data, cb);
                 datastoreMock.key.should.be.calledWith({
                     namespace: config.namespace,
                     path: [METHODS[method], data.id]
                 });
                 datastoreMock.save.should.be.calledWith(updateObj, cb);
+                cb.should.be.calledWith(null);
             });
         });
 
@@ -328,6 +332,53 @@ describe('Datastore', function() {
                 Storage(config)[method].all(cb);
                 datastoreMock.createQuery.should.be.calledWith(config.namespace, METHODS[method]);
                 cb.should.be.calledWith(err);
+            });
+        });
+
+        describe('delete', function() {
+            var config;
+
+            beforeEach(function() {
+                config = {
+                    projectId: 'right_here'
+                };
+            });
+
+            it('should call datastore delete', function() {
+                var cb = sinon.stub(),
+                    id = 'walterwhite';
+
+                datastoreMock.delete.callsArgWith(1, null, sinon.stub());
+                Storage(config)[method].delete(id, cb);
+                datastoreMock.key.should.be.calledWith([METHODS[method], id]);
+                datastoreMock.delete.should.be.called();
+                cb.should.be.calledWith(null);
+            });
+        });
+
+        describe('save into namespace', function() {
+            var config;
+
+            beforeEach(function() {
+                config = {
+                    projectId: 'right_here',
+                    namespace: 'my-space'
+                };
+            });
+
+            it('should call datastore save', function() {
+                var cb = sinon.stub(),
+                    id = 'walterwhite';
+
+                datastoreMock.delete.callsArgWith(1, null, sinon.stub());
+                Storage(config)[method].delete(id, cb);
+                datastoreMock.key.should.be.calledWith({
+                    namespace: config.namespace,
+                    path: [METHODS[method], id]
+                });
+                datastoreMock.delete.should.be.called();
+                cb.should.be.calledWith(null);
+
             });
         });
     });

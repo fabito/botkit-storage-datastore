@@ -4,8 +4,8 @@
   "description": "Google Cloud Datastore driver for Botkit",
   "main": "index.js",
   "scripts": {
-    "pretest": "jscs ./",
-    "test": "istanbul cover --report lcov --dir coverage/ _mocha ./tests --grep ./tests/*.js -- --colors"
+    "pretest": "eslint ./",
+    "test": "istanbul cover --report lcov --dir coverage/ _mocha ./tests/index.js  -- --colors"
   },
   "keywords": [
     "botkit",
@@ -20,18 +20,18 @@
   },
   "bugs": {
     "url": "https://github.com/fabito/botkit-storage-datastore/issues"
-  },  
+  },
   "dependencies": {
-    "google-cloud": "^0.53.0"
+    "@google-cloud/datastore": "^3.0.1"
   },
   "devDependencies": {
-    "coveralls": "^2.11.9",
-    "istanbul": "^0.4.1",
-    "jscs": "^2.8.0",
-    "mocha": "^2.3.4",
-    "proxyquire": "^1.7.3",
-    "should": "^8.0.2",
-    "should-sinon": "0.0.3",
-    "sinon": "^1.17.2"
+    "coveralls": "^3.0.2",
+    "eslint": "^5.12.1",
+    "istanbul": "^0.4.5",
+    "mocha": "^5.2.0",
+    "proxyquire": "^2.1.0",
+    "should": "^13.2.3",
+    "should-sinon": "0.0.6",
+    "sinon": "^7.2.3"
   }
 }
