@@ -1,7 +1,17 @@
 language: node_js
 node_js:
-  - "11"
-  - "10"
-  - "8"
-# Send coverage data to Coveralls
-after_script: "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+- '11'
+- '10'
+- '8'
+after_script: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+jobs:
+  include:
+  - stage: npm release
+    node_js: stable
+    deploy:
+      email: tonym@tonym.us
+      provider: npm
+      on:
+        tags: true
+      api_key:
+        secure: O5IuSYA33++9H8+u3FeJy/zP+HPqbXNeWPqVOtj3wCTFV1KDgTzkJu+pq4cEbsJ++ZDOHxokueHlZYd9XzKdXe9+HYNcPAOgsbAsg/SictZRCjWVwWm/YaKBRsK/GVEH1bJGG4gHdI2dDEUE9EpuzPY0x81k20SOfpqvZg7VnwfdYYqeOgsxvGvczFbKTRaiV4eG6kn7Ey3li5TJxp9BoqIWCVLMSCgjGdON40JLetBoNmwXEw9N01yYwHVr3imDREfveJUeIWUs2xQgr78T7NYdW/9+DPAJQxO04HeSynqSPz0u0gx5y7r+HlQx2GxAlddz9KlXsgIrgpFoSy5ivELg8Tgc+ITqgYWz4ymFsQGd8PaupnWaeoGDlqD3Y+Az1rMBd6UF8/JWKCtN7Et2+KT2pWhi+T3W93HBHE3mNgL3znKoQzLJeR9muc503f7lZvBKwUw1g2W8MOvqzSsleWP6grL3nAuqPRj/OT+0lHdKLjWmS2v3f9KMtcptoh6BQKUf/zqR5E0XxtwWcdUMCoDWCg8Cr5eaoMBaHmvGnzj3ix2OclIRQAYXeJ4mqueIHr55mMcGqV9sWD+jFsbB4Y6cQXQ3hYzvZHKi1ptD2Wi00pEWn76nvSCWybTe5QbU864meZWOp9ifwLdzxYM+7htJ8Il97urqqmkEIuyCIik=
