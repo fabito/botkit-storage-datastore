@@ -22,7 +22,7 @@
     "url": "https://github.com/fabito/botkit-storage-datastore/issues"
   },
   "dependencies": {
-    "@google-cloud/datastore": "^3.0.1"
+    "@google-cloud/datastore": "^9.0.0"
   },
   "devDependencies": {
     "coveralls": "^3.0.2",
